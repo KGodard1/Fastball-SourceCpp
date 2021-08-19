@@ -28,7 +28,8 @@ Imports:
     utils,
     igraph,
     network,
-    PoissonBinomial
+    PoissonBinomial,
+    Rcpp
 Suggests:
     knitr,
     rmarkdown,
@@ -36,3 +37,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://www.zacharyneal.com/backbone, https://github.com/domagal9/backbone
 BugReports: https://github.com/domagal9/backbone/issues
+LinkingTo: Rcpp

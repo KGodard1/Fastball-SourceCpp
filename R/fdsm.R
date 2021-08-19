@@ -67,14 +67,27 @@ fdsm <- function(B,
       vec <- dyad
     }
   }
+  
+  #### Define Dimensional Variables ####
+  RC=dim(B)
+  R=RC[1]
+  C=RC[2]
+  hp=list()
+
+  #### Mark Locations of One's ####
+  for (row in 1:R) {hp[[row]]=(which(B[row,]==1))}
 
   #### Build Null Models ####
   for (i in 1:trials){
 
     #Algorithm credit to: Strona, G., Nappo, D., Boccacci, F., Fattorini, S., San-Miguel-Ayanz, J. (2014). A fast and unbiased procedure to randomize ecological binary matrices with fixed row and column totals. Nature Communications, 5, 4114
-    ### Use curveball to create an FDSM Bstar ###
-    Bstar <- curveball(B)
+    ### Use fastball (an optimized curveball implementation) to create an FDSM hp_star ###
+    hp_star = fastball(hp, R, C, checkType=FALSE)
 
+    ### Convert One Locations back to Bipartite Matrix ###
+    Bstar=matrix(0,R,C)
+    for (row in 1:R){Bstar[row,hp_star[[row]]]=1}
+    
     ### Construct Pstar from Bstar ###
     Pstar <- tcrossprod(Bstar)
 
