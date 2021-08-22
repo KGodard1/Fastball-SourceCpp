@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-Rcpp::List fastball(Rcpp::List inputDf, Rcpp::NumericVector dim) {
+Rcpp::List fastball_cpp(Rcpp::List inputDf, Rcpp::NumericVector dim) {
   //convert input list into std::vector of std::vectors
 
   int numRows = dim[0];
@@ -18,12 +18,12 @@ Rcpp::List fastball(Rcpp::List inputDf, Rcpp::NumericVector dim) {
     oneLocs[i] = Rcpp::as<std::vector<int>> (inputDf[i]);
 
     /*
-    //Method 2:
-    Rcpp::NumericVector temp = inputDf[i];
-    for (int j = 0; j < temp.size(); j++) {
-      oneLocs[i].push_back(temp[j]);
+     //Method 2:
+     Rcpp::NumericVector temp = inputDf[i];
+     for (int j = 0; j < temp.size(); j++) {
+     oneLocs[i].push_back(temp[j]);
 
-    }
+     }
      */
   }
 
@@ -77,78 +77,78 @@ Rcpp::List fastball(Rcpp::List inputDf, Rcpp::NumericVector dim) {
     std::fill(swapLocations.begin() + r1SymDiffSize, swapLocations.end(), 1);
 
 
-      //shuffle swapLocations
-      for (int i = 0; i < swapLocations.size() - 1; i++) {
-        int j = i + rand() % (swapLocations.size() - i);
-        std::swap(swapLocations[i],swapLocations[j]);
-      }
+    //shuffle swapLocations
+    for (int i = 0; i < swapLocations.size() - 1; i++) {
+      int j = i + rand() % (swapLocations.size() - i);
+      std::swap(swapLocations[i],swapLocations[j]);
+    }
 
-      //create vectors to store output of curveball swaps
-      std::vector<std::vector<int>> curveballRows (2);
-      curveballRows[0].reserve(r1.size());
-      curveballRows[1].reserve(r2.size());
+    //create vectors to store output of curveball swaps
+    std::vector<std::vector<int>> curveballRows (2);
+    curveballRows[0].reserve(r1.size());
+    curveballRows[1].reserve(r2.size());
 
-      //generate iterators for sweep through r1 and r2
-      first1 = r1.begin();
-      last1 = r1.end();
-      first2 = r2.begin();
-      last2 = r2.end();
-      auto swapIterator = swapLocations.begin();
-
-
+    //generate iterators for sweep through r1 and r2
+    first1 = r1.begin();
+    last1 = r1.end();
+    first2 = r2.begin();
+    last2 = r2.end();
+    auto swapIterator = swapLocations.begin();
 
 
-      while (first1!=last1 && first2!=last2)
-      {
-        if (*first1<*first2) {
-          curveballRows[*swapIterator].push_back(*first1);
-          ++swapIterator;
-          ++first1;
-        }
-        else if (*first2<*first1) {
-          curveballRows[*swapIterator].push_back(*first2);
-          ++swapIterator;
-          ++first2;
-        }
-        else {
-          curveballRows[0].push_back(*first1);
-          curveballRows[1].push_back(*first2);
-          ++first1; ++first2;
-        }
-      }
 
-      while (first1 != last1) {
+
+    while (first1!=last1 && first2!=last2)
+    {
+      if (*first1<*first2) {
         curveballRows[*swapIterator].push_back(*first1);
         ++swapIterator;
         ++first1;
       }
-
-      while (first2 != last2) {
+      else if (*first2<*first1) {
         curveballRows[*swapIterator].push_back(*first2);
         ++swapIterator;
         ++first2;
       }
-      /*
-      for (int i = 0; i < curveballRows[0].size(); i++) {
-        Rcpp::Rcout << curveballRows[0][i] << ' ';
+      else {
+        curveballRows[0].push_back(*first1);
+        curveballRows[1].push_back(*first2);
+        ++first1; ++first2;
       }
-      Rcpp::Rcout << "\n";
+    }
 
-      for (int i = 0; i < curveballRows[1].size(); i++) {
-        Rcpp::Rcout << curveballRows[1][i] << ' ';
-      }
-      Rcpp::Rcout << "\n";
-      */
+    while (first1 != last1) {
+      curveballRows[*swapIterator].push_back(*first1);
+      ++swapIterator;
+      ++first1;
+    }
 
-      r1.clear();
-      r2.clear();
-      std::vector<int> & newV1 = curveballRows[0];
-      std::vector<int> & newV2 = curveballRows[1];
-      //Rcpp::Rcout << r1.size() << ' ' << curveballRows[0].size() << '\n';
-      //Rcpp::Rcout << r2.size() << ' ' << curveballRows[1].size() << '\n';
+    while (first2 != last2) {
+      curveballRows[*swapIterator].push_back(*first2);
+      ++swapIterator;
+      ++first2;
+    }
+    /*
+     for (int i = 0; i < curveballRows[0].size(); i++) {
+     Rcpp::Rcout << curveballRows[0][i] << ' ';
+     }
+     Rcpp::Rcout << "\n";
 
-      r1.insert(r1.end(), newV1.begin(), newV1.end());
-      r2.insert(r2.end(), newV2.begin(), newV2.end());
+     for (int i = 0; i < curveballRows[1].size(); i++) {
+     Rcpp::Rcout << curveballRows[1][i] << ' ';
+     }
+     Rcpp::Rcout << "\n";
+     */
+
+    r1.clear();
+    r2.clear();
+    std::vector<int> & newV1 = curveballRows[0];
+    std::vector<int> & newV2 = curveballRows[1];
+    //Rcpp::Rcout << r1.size() << ' ' << curveballRows[0].size() << '\n';
+    //Rcpp::Rcout << r2.size() << ' ' << curveballRows[1].size() << '\n';
+
+    r1.insert(r1.end(), newV1.begin(), newV1.end());
+    r2.insert(r2.end(), newV2.begin(), newV2.end());
   }
   for (int i = 0; i < numRows; i++) {
     Rcpp::NumericVector temp = Rcpp::wrap(oneLocs[i]);
