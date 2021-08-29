@@ -22,14 +22,14 @@
 #'
 #' @examples
 fastball <- function(B, R = nrow(B), C = ncol(B)) {
-  if (class(B)=="matrix" | class(B)==c("matrix", "array")) {B <- apply(B==1, 1, which)}  #If a matrix is provided, convert to an indexed list
+  # TODO: change this address to work with package
+  # Question: can sourceCpp even be used in an R package? or must compileAttributes be used?
+  #           would we have to use a relative link?
+  sourceCpp("/Users/karlgodard/RProjects/Fastball-SourceCpp/backbone/R/fastball.cpp")
+
+
+  if (class(B)=="matrix" || class(B)==c("matrix", "array")) {B <- apply(B==1, 1, which)}  #If a matrix is provided, convert to an indexed list
   star <- fastball_cpp(B, c(R,C))  #Run fastball C++
 
-  ### Fastball should always return a matrix
-  ### Would it be faster to make this last step part of fastball_cpp
-  Bstar <- matrix(0,R,C)  #Initialize randomized matrix
-  for (row in 1:R) {Bstar[row,star[[row]]] <- 1}  #Convert list to matrix
-  ###
-
-  return(Bstar)
+  return(star)
 }
